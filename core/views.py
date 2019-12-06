@@ -11,7 +11,7 @@ class TodoViewSet(viewsets.ModelViewSet):
     serializer_class = TodoSerializer
     renderer_classes = (JSONRenderer, )
 
-    def retrieve(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         todos = self.get_queryset()
         serializer = self.get_serializer(todos, many=True)
 
