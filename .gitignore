@@ -1,0 +1,11 @@
+# editors
+.vscode
+.idea
+.atom
+
+# misc
+__pycache__
+.DS_Store
+
+# db
+db.sqlite3
