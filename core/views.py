@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework import viewsets
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
@@ -11,13 +13,13 @@ class TodoViewSet(viewsets.ModelViewSet):
     serializer_class = TodoSerializer
     renderer_classes = (JSONRenderer, )
 
-    def list(self, request, *args, **kwargs):
+    def list(self, request):
         todos = self.get_queryset()
         serializer = self.get_serializer(todos, many=True)
 
         return Response({'data': serializer.data})
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request):
         title = request.data.get('title')
         tags = request.data.get('tags')
 
@@ -33,4 +35,15 @@ class TodoViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(todo)
 
-        return Response({'data': serializer.data}, status=201)
+        return Response({'data': serializer.data})
+
+    def destroy(self, request, pk=None):
+        try:
+            todo = Todo.objects.get(id=pk)
+
+            todo.delete()
+            serializer = self.get_serializer(todo)
+
+            return Response({'data': serializer.data})
+        except Todo.DoesNotExist:
+            return Response({'message': 'Not found'}, status=404)
