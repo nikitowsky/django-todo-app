@@ -25,3 +25,11 @@ class TodoSerializer(serializers.ModelSerializer):
             'updated_at',
             'tags',
         )
+
+
+class TodoCreateSerializer(TodoSerializer):
+    tags = serializers.ListField(child=serializers.CharField(max_length=50))
+
+
+class TodoUpdateSerializer(TodoSerializer):
+    tags = serializers.ListField(child=serializers.CharField(max_length=50))

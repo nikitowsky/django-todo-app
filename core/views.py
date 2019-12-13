@@ -5,17 +5,20 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 from core.models import Todo, Tag
-from core.serializers import TodoSerializer
+from core.serializers import (
+    TodoSerializer,
+    TodoUpdateSerializer,
+    TodoCreateSerializer,
+)
 
 
 class TodoViewSet(viewsets.ModelViewSet):
     queryset = Todo.objects.all()
-    serializer_class = TodoSerializer
     renderer_classes = (JSONRenderer, )
 
     def list(self, request):
         todos = self.get_queryset()
-        serializer = self.get_serializer(todos, many=True)
+        serializer = TodoSerializer(todos, many=True)
         serialized_data = serializer.data
 
         return Response({'data': serialized_data})
@@ -23,11 +26,10 @@ class TodoViewSet(viewsets.ModelViewSet):
     def create(self, request):
         title = request.data.get('title')
         tags = request.data.get('tags')
+        request_serializer = TodoCreateSerializer(data=request.data)
 
-        try:
+        if request_serializer.is_valid():
             todo = Todo.objects.create(title=title)
-
-            todo.full_clean()
 
             for tag in tags:
                 tag, created = Tag.objects.get_or_create(title=tag)
@@ -37,25 +39,22 @@ class TodoViewSet(viewsets.ModelViewSet):
 
                 todo.tags.add(tag)
 
-        except ValidationError as error:
-            return Response({'errors': dict(error)})
+            serializer = self.get_serializer(todo)
 
-        serializer = self.get_serializer(todo)
-        serialized_data = serializer.data
-
-        return Response({'data': serialized_data})
+            return Response({'data': serializer.data})
+        else:
+            return Response({'errors': request_serializer.errors})
 
     def partial_update(self, request, pk=None):
         todo = self.get_object()
-        serializer = self.get_serializer(todo)
+        serializer = TodoSerializer(todo)
+        request_serializer = TodoUpdateSerializer(data=request.data)
 
-        title = request.data.get('title')
-        tags = request.data.get('tags')
+        if request_serializer.is_valid():
+            title = request.data.get('title')
+            tags = request.data.get('tags')
 
-        todo.title = title
-
-        try:
-            todo.full_clean()
+            todo.title = title
             todo.tags.clear()
 
             for tag in tags:
@@ -67,23 +66,21 @@ class TodoViewSet(viewsets.ModelViewSet):
                 todo.tags.add(tag)
 
             todo.save()
-        except ValidationError as error:
-            return Response({'errors': dict(error)})
 
-        serialized_data = serializer.data
-
-        return Response({'data': serialized_data})
+            return Response({'data': serializer.data})
+        else:
+            return Response({'errors': request_serializer.errors})
 
     def retrieve(self, request, pk=None):
         todo = self.get_object()
-        serializer = self.get_serializer(todo)
+        serializer = TodoSerializer(todo)
         serialized_data = serializer.data
 
         return Response({'data': serialized_data})
 
     def destroy(self, request, pk=None):
         todo = self.get_object()
-        serializer = self.get_serializer(todo)
+        serializer = TodoSerializer(todo)
         serialized_data = serializer.data
 
         todo.delete()
