@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+
 from rest_framework import viewsets
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
@@ -22,17 +24,51 @@ class TodoViewSet(viewsets.ModelViewSet):
         title = request.data.get('title')
         tags = request.data.get('tags')
 
-        todo = Todo.objects.create(title=title)
+        try:
+            todo = Todo.objects.create(title=title)
 
-        for tag in tags:
-            tag, created = Tag.objects.get_or_create(title=tag)
+            todo.full_clean()
 
-            if not created:
-                tag = Tag.objects.get(title=tag)
+            for tag in tags:
+                tag, created = Tag.objects.get_or_create(title=tag)
 
-            todo.tags.add(tag)
+                if not created:
+                    tag = Tag.objects.get(title=tag)
+
+                todo.tags.add(tag)
+
+        except ValidationError as error:
+            return Response({'errors': dict(error)})
 
         serializer = self.get_serializer(todo)
+        serialized_data = serializer.data
+
+        return Response({'data': serialized_data})
+
+    def partial_update(self, request, pk=None):
+        todo = self.get_object()
+        serializer = self.get_serializer(todo)
+
+        title = request.data.get('title')
+        tags = request.data.get('tags')
+
+        todo.title = title
+
+        try:
+            todo.full_clean()
+
+            for tag in tags:
+                tag, created = Tag.objects.get_or_create(title=tag)
+
+                if not created:
+                    tag = Tag.objects.get(title=tag)
+
+                todo.tags.add(tag)
+
+            todo.save()
+        except ValidationError as error:
+            return Response({'errors': dict(error)})
+
         serialized_data = serializer.data
 
         return Response({'data': serialized_data})

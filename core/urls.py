@@ -7,9 +7,11 @@ urlpatterns = [
         'get': 'list',
         'post': 'create'
     })),
-    path('todos/<int:pk>',
-         views.TodoViewSet.as_view({
-             'get': 'retrieve',
-             'delete': 'destroy',
-         })),
+    path(
+        'todos/<int:pk>',
+        views.TodoViewSet.as_view({
+            'get': 'retrieve',
+            'put': 'partial_update',
+            'delete': 'destroy',
+        })),
 ]
