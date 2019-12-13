@@ -56,6 +56,7 @@ class TodoViewSet(viewsets.ModelViewSet):
 
         try:
             todo.full_clean()
+            todo.tags.clear()
 
             for tag in tags:
                 tag, created = Tag.objects.get_or_create(title=tag)
