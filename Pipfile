@@ -4,11 +4,13 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+yapf = "*"
+flake8 = "*"
 
 [packages]
 gunicorn = "*"
 django = "*"
-django-rest-framework = "*"
+djangorestframework = "*"
 
 [requires]
 python_version = "3.8"
