@@ -1,6 +1,6 @@
 # Django Todo app RESTful API
 
-## Gettings started
+## Getting started
 
 ```bash
 docker build . -t django_todo_app
