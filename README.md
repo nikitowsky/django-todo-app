@@ -1,6 +1,13 @@
 # Django Todo app RESTful API
 
-Methods available:
+## Gettings started
+
+```bash
+docker build . -t django_todo_app
+docker run -p 8000:8000 django_todo_app
+```
+
+## Methods available:
 
 - Get all todos:
 
