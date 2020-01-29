@@ -25,7 +25,7 @@ SECRET_KEY = 'ym#zr$#39e#f!7&lv%!^fg2!=!qy!=mszz)+zwg#dt&_!qool5'
 DEBUG = True
 
 # WARNING: use 0.0.0.0 for development/showcase purpose only
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0']
 
 # Application definition
 
