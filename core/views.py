@@ -1,5 +1,3 @@
-from django.core.exceptions import ValidationError
-
 from rest_framework import viewsets
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
