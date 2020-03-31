@@ -1,52 +1,41 @@
-from rest_framework import viewsets
-from rest_framework.renderers import JSONRenderer
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 
 from core.models import Todo, Tag
-from core.serializers import (
-    TodoSerializer,
-    TodoUpdateSerializer,
-    TodoCreateSerializer,
-)
+from core.serializers import TodoSerializer, TodoManageSerializer
 
 
 class TodoViewSet(viewsets.ModelViewSet):
     queryset = Todo.objects.all()
-    renderer_classes = (JSONRenderer, )
+    serializer_class = TodoSerializer
 
     def list(self, request):
         todos = self.get_queryset()
-        serializer = TodoSerializer(todos, many=True)
-        serialized_data = serializer.data
+        serializer = self.serializer_class(todos, many=True)
 
-        return Response({'data': serialized_data})
+        return Response({'data': serializer.data})
+
+    def retrieve(self, request, pk=None):
+        todo = self.get_object()
+        serializer = self.serializer_class(todo)
+
+        return Response({'data': serializer.data})
 
     def create(self, request):
-        title = request.data.get('title')
-        tags = request.data.get('tags')
-        request_serializer = TodoCreateSerializer(data=request.data)
+        serializer = TodoManageSerializer(data=request.data)
 
-        if request_serializer.is_valid():
-            todo = Todo.objects.create(title=title)
-
-            for tag in tags:
-                tag, created = Tag.objects.get_or_create(title=tag)
-
-                if not created:
-                    tag = Tag.objects.get(title=tag)
-
-                todo.tags.add(tag)
-
-            serializer = self.get_serializer(todo)
+        if serializer.is_valid():
+            serializer.create(request.data)
 
             return Response({'data': serializer.data})
         else:
-            return Response({'errors': request_serializer.errors})
+            return Response({'errors': serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
         todo = self.get_object()
-        serializer = TodoSerializer(todo)
-        request_serializer = TodoUpdateSerializer(data=request.data)
+        serializer = self.serializer_class(todo)
+        request_serializer = TodoManageSerializer(data=request.data)
 
         if request_serializer.is_valid():
             title = request.data.get('title')
@@ -67,18 +56,12 @@ class TodoViewSet(viewsets.ModelViewSet):
 
             return Response({'data': serializer.data})
         else:
-            return Response({'errors': request_serializer.errors})
-
-    def retrieve(self, request, pk=None):
-        todo = self.get_object()
-        serializer = TodoSerializer(todo)
-        serialized_data = serializer.data
-
-        return Response({'data': serialized_data})
+            return Response({'errors': request_serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
         todo = self.get_object()
-        serializer = TodoSerializer(todo)
+        serializer = self.serializer_class(todo)
         serialized_data = serializer.data
 
         todo.delete()

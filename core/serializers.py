@@ -27,9 +27,16 @@ class TodoSerializer(serializers.ModelSerializer):
         )
 
 
-class TodoCreateSerializer(TodoSerializer):
+class TodoManageSerializer(TodoSerializer):
     tags = serializers.ListField(child=serializers.CharField(max_length=50))
 
+    def create(self, validated_data):
+        title = validated_data['title']
+        tags = validated_data['tags']
 
-class TodoUpdateSerializer(TodoSerializer):
-    tags = serializers.ListField(child=serializers.CharField(max_length=50))
+        todo = Todo.objects.create(title=title)
+
+        for tag in tags:
+            todo.add_tag(tag)
+
+        return todo

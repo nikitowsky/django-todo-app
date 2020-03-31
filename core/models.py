@@ -27,5 +27,19 @@ class Todo(BaseModel):
     class Meta:
         ordering = ['created_at']
 
+    def add_tag(self, title):
+        """ Add tag to a Todo """
+        if title is None:
+            raise ValueError('Title is required')
+
+        tag, created = Tag.objects.get_or_create(title=title)
+
+        if not created:
+            tag = Tag.objects.get(title=tag)
+
+        self.tags.add(tag)
+
+        return tag
+
     def __str__(self):
         return self.title
