@@ -15,7 +15,7 @@ description = "A high-level Python Web framework that encourages rapid developme
 name = "django"
 optional = false
 python-versions = ">=3.6"
-version = "3.0.1"
+version = "3.0.3"
 
 [package.dependencies]
 asgiref = ">=3.2,<4.0"
@@ -125,7 +125,7 @@ python-versions = "*"
 version = "0.29.0"
 
 [metadata]
-content-hash = "9877b6e0681202324ae53c217923ef9dc2fe4350142e895325bf4cb57939fd4e"
+content-hash = "4643dab7d2d4d925daf39f983c1927982560a12ac8eed2d51a90cde3a60cf1c4"
 python-versions = "3.8"
 
 [metadata.files]
@@ -134,8 +134,8 @@ asgiref = [
     {file = "asgiref-3.2.3.tar.gz", hash = "sha256:7e06d934a7718bf3975acbf87780ba678957b87c7adc056f13b6215d610695a0"},
 ]
 django = [
-    {file = "Django-3.0.1-py3-none-any.whl", hash = "sha256:b61295749be7e1c42467c55bcabdaee9fbe9496fdf9ed2e22cef44d9de2ff953"},
-    {file = "Django-3.0.1.tar.gz", hash = "sha256:315b11ea265dd15348d47f2cbb044ef71da2018f6e582fed875c889758e6f844"},
+    {file = "Django-3.0.3-py3-none-any.whl", hash = "sha256:c91c91a7ad6ef67a874a4f76f58ba534f9208412692a840e1d125eb5c279cb0a"},
+    {file = "Django-3.0.3.tar.gz", hash = "sha256:2f1ba1db8648484dd5c238fb62504777b7ad090c81c5f1fd8d5eb5ec21b5f283"},
 ]
 djangorestframework = [
     {file = "djangorestframework-3.11.0-py3-none-any.whl", hash = "sha256:05809fc66e1c997fd9a32ea5730d9f4ba28b109b9da71fccfa5ff241201fd0a4"},
